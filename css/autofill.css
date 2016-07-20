@@ -1,0 +1,18 @@
+.autofill-show{
+    list-style: outside none none;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+    margin:0;
+    z-index: 9999999;
+}
+.autofill-list{
+    border: 1px solid #ccc;
+    text-align: center;
+    background: #fff;
+}
+
+.autofill-list:hover{
+    background: #9bcea3;
+    cursor: pointer;
+}
