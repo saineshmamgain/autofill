@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AutoFill</title>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/autofill.js"></script>
+        <link rel="stylesheet" href="css/autofill.css">
+    </head>
+    <body>
+    <form action="">
+        <label for="autofill">AutoComplete</label>
+        <input type="text" id="autofill" data-autofill='[{"label":"Sainesh","value":1},{"label":"Rinku","value":2},{"label":"Tripti","value":3},{"label":"Jitendra","value":4},{"label":"Pavitra","value":5}]'>
+        <input type="hidden" id="hid">
+        <br><br>
+        <label for="autofill_2">AutoComplete</label>
+        <input type="text" id="autofill_2" data-autofill='[{"label":"Sainesh Mamgain","value":1},{"label":"Rinku Gahlaut","value":2},{"label":"Tripti Tiwari","value":3},{"label":"Jitendra Omare","value":4},{"label":"Pavitra Bansal","value":5}]'>
+        <input type="hidden" id="hid_2">
+    </form>
+    <script>
+        $('#autofill').autofill({
+            onSelect:function(label,value){
+                $('#hid').val(value);
+            },
+            onChange:function(query,object,exactMatch){
+                console.log(exactMatch);
+            },
+            onFocusIn:function(){
+                console.log('focus on 1');
+            }
+        });
+        $('#autofill_2').autofill({
+            onChange:function(q,r){
+                console.log('change in two');
+            },
+            onFocusIn:function(){
+                console.log('focus on 2');
+            }
+        });
+    </script>
+    </body>
+</html>
