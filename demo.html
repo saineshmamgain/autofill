@@ -35,7 +35,7 @@
             render:function(objects){
                 var li='';
                 $.each(objects,function(key,value){
-                    li+='<li>'+value.label+'</li>';
+                    li+='<li class="autofill-list" data-value="'+value.value+'"><span>'+value.label+'</span></li>';
                 });
                 return li;
             }
