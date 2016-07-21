@@ -5,6 +5,18 @@ var options_default = {
     },
     onFocusIn: function () {
     },
+    render:function(objects){
+        var dataAttributes='';
+        var li='';
+        $(objects).each(function(key,value){
+            $.each(value,function(key,value){
+                dataAttributes+=' data-'+key+'="'+value+'" ';
+            });
+            li+='<li class="autofill-list"'+dataAttributes+'>'+value.label+'</li>';
+            dataAttributes='';
+        });
+        return li;
+    },
     minScroll:6,
     minScrollHeight:'100px'
 };
@@ -32,23 +44,33 @@ $.fn.autofill = function (options) {
         left: -99999
     });
     $('#' + currentInputId).on('keyup', function (event) {
-        li = '';
         var query = $(this).val();
         if (query.length) {
-            $.grep(autoCompleteData, function (object) {
+            var result=$.grep(autoCompleteData, function (object) {
                 try {
                     if (object.label.search(new RegExp(query, 'i')) !== -1) {
-                        $.each(object,function(key,value){
-                            dataAttributes+=' data-'+key+'="'+value+'" ';
-                        });
-                        li += '<li class="autofill-list"'+dataAttributes+'>' + object.label + '</li>';
                         $(event.target).trigger('onChange',[query,object,options]);
-                        dataAttributes='';
+                        return object;
                     }
                 } catch (e) {
                     $('#' + listId).css('left', -99999);
                 }
             });
+            if(options.render || options_default.render){
+                if($.isFunction(options.render)){
+                    li=options.render(result);
+                }else{
+                    li=options_default.render(result);
+                }
+            }
+        }else{
+            if(options.render || options_default.render){
+                if($.isFunction(options.render)){
+                    li=options.render(autoCompleteData);
+                }else{
+                    li=options_default.render(autoCompleteData);
+                }
+            }
         }
         $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
         if ($('#' + listId).find('li').length >= ((options.minScroll)?options.minScroll:options_default.minScroll)) {
@@ -60,13 +82,13 @@ $.fn.autofill = function (options) {
     }).on('focus', function (event) {
         li = '';
         $(this).val('');
-        $.each(autoCompleteData, function (key, object) {
-            $.each(object,function(key,value){
-                dataAttributes+=' data-'+key+'="'+value+'" ';
-            });
-            li += '<li class="autofill-list"'+dataAttributes+'>' + object.label + '</li>';
-            dataAttributes='';
-        });
+        if(options.render || options_default.render){
+            if($.isFunction(options.render)){
+                li=options.render(autoCompleteData);
+            }else{
+                li=options_default.render(autoCompleteData);
+            }
+        }
         $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
         if ($('#' + listId).find('li').length >= ((options.minScroll)?options.minScroll:options_default.minScroll)) {
             $('#' + listId).css({
