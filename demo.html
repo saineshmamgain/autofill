@@ -13,11 +13,11 @@
         <input type="hidden" id="hid">
         <br><br>
         <label for="autofill_2">AutoComplete</label>
-        <input type="text" id="autofill_2" data-autofill='[{"label":"Sainesh Mamgain","value":1,"type":"super admin"},{"label":"Rinku Gahlaut","value":2,"type":"admin"},{"label":"Tripti Tiwari","value":3,"type":"tester"},{"label":"Jitendra Omare","value":4,"type":"designer"},{"label":"Pavitra Bansal","value":5,"type":"social media"}]'>
+        <input type="text" id="autofill_2" data-autofill=''>
         <input type="hidden" id="hid_2">
         <br><br>
-        <label for="autofill_3">AutoComplete</label>
-        <input type="text" id="autofill_3" data-autofill='[{"label":"Sainesh Mamgain","value":1,"type":"super admin"},{"label":"Rinku Gahlaut","value":2,"type":"admin"},{"label":"Tripti Tiwari","value":3,"type":"tester"},{"label":"Jitendra Omare","value":4,"type":"designer"},{"label":"Pavitra Bansal","value":5,"type":"social media"}]'>
+        <label>AutoComplete</label>
+        <input type="text" class="autofill" data-autofill='[{"label":"Sainesh Mamgain","value":1,"type":"super admin"},{"label":"Rinku Gahlaut","value":2,"type":"admin"},{"label":"Tripti Tiwari","value":3,"type":"tester"},{"label":"Jitendra Omare","value":4,"type":"designer"},{"label":"Pavitra Bansal","value":5,"type":"social media"}]'>
         <input type="hidden" id="hid_3">
         <div id="hidden" style="display: none;">[{"label":"Sainesh","value":1,"type":"super admin"},{"label":"Rinku","value":2,"type":"admin"},{"label":"Tripti","value":3,"type":"tester"},{"label":"Jitendra","value":4,"type":"designer"},{"label":"Pavitra","value":5,"type":"social media"}]</div>
     </form>
@@ -44,6 +44,7 @@
             }
         });
         $('#autofill_2').autofill({
+            source:$('#hidden').text(),
             onChange:function(query,objects,exactMatch){
                 if(exactMatch.value!==undefined){
                     $('#hid_2').val(exactMatch.value);
@@ -55,7 +56,7 @@
                 $('#hid_2').val(object.value);
             }
         });
-        $('#autofill_3').autofill();
+        $('.autofill').autofill();
     </script>
     </body>
 </html>
