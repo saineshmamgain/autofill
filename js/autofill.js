@@ -4,7 +4,9 @@ var options_default = {
     onChange: function (label, value) {
     },
     onFocusIn: function () {
-    }
+    },
+    minScroll:6,
+    minScrollHeight:'100px'
 };
 $.fn.autofill = function (options) {
     if (undefined == options) {
@@ -49,9 +51,9 @@ $.fn.autofill = function (options) {
             });
         }
         $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
-        if ($('#' + listId).find('li').length >= 6) {
+        if ($('#' + listId).find('li').length >= options.minScroll) {
             $('#' + listId).css({
-                height: '130px',
+                height: (options.minScrollHeight)?options.minScrollHeight:options_default.minScrollHeight,
                 'overflow-y': 'scroll'
             });
         }
@@ -66,9 +68,9 @@ $.fn.autofill = function (options) {
             dataAttributes='';
         });
         $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
-        if ($('#' + listId).find('li').length >= 6) {
+        if ($('#' + listId).find('li').length >= options.minScroll) {
             $('#' + listId).css({
-                height: '130px',
+                height: (options.minScrollHeight)?options.minScrollHeight:options_default.minScrollHeight,
                 'overflow-y': 'scroll'
             });
         }
