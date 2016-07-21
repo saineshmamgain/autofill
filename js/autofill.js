@@ -26,15 +26,9 @@ $.fn.autofill = function (options) {
     $list.css({
         width: $currentInput.width() + parseInt($currentInput.css('padding-left'), 10) + parseInt($currentInput.css('padding-right'), 10),
         position: 'absolute',
-        top: position.top + $currentInput.outerHeight(),
+        top: (options.top)?options.top:position.top + $currentInput.outerHeight(),
         left: -99999
     });
-    if ($list.find('li').length >= 6) {
-        $list.css({
-            height: '130px',
-            'overflow-y': 'scroll'
-        });
-    }
     $('#' + currentInputId).on('keyup', function (event) {
         li = '';
         var query = $(this).val();
@@ -54,7 +48,13 @@ $.fn.autofill = function (options) {
                 }
             });
         }
-        $('#' + listId).html(li).css('left', position.left);
+        $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
+        if ($('#' + listId).find('li').length >= 6) {
+            $('#' + listId).css({
+                height: '130px',
+                'overflow-y': 'scroll'
+            });
+        }
     }).on('focus', function (event) {
         li = '';
         $(this).val('');
@@ -65,7 +65,13 @@ $.fn.autofill = function (options) {
             li += '<li class="autofill-list"'+dataAttributes+'>' + object.label + '</li>';
             dataAttributes='';
         });
-        $('#' + listId).html(li).css('left', position.left);
+        $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
+        if ($('#' + listId).find('li').length >= 6) {
+            $('#' + listId).css({
+                height: '130px',
+                'overflow-y': 'scroll'
+            });
+        }
         $(event.target).trigger('onFocusIn',[options]);
         $(event.target).trigger('onChange',['',{},options]);
     });
