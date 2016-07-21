@@ -85,10 +85,12 @@ $(document).on('onFocusIn',function (event,options) {
 });
 $(document).on('onChange',function (event,query,object,options) {
     if($.isFunction(options.onChange)){
-        var exactMatch=$.grep(object, function (v) {
-            return v.label.search(new RegExp('\^' + query + '\$', "gi")) !== -1;
-        });
-        options.onChange(query,object,exactMatch);
+        var exactMatch;
+        var reg = new RegExp('\^' + query + '\$', "gi");
+        exactMatch=$(object).filter(function (key,value) {
+            return reg.test(value.label);
+        }).get();
+        options.onChange(query,object,(exactMatch[0])?exactMatch[0]:{});
     }
 });
 $(document).on('close',function(event){
