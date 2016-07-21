@@ -17,6 +17,7 @@ $.fn.autofill = function (options) {
     var $list = $('<ul>');
     var listId = 'autofill_list_' + currentInputId;
     var li = '';
+    var dataAttributes='';
     $list.attr({
         id: listId,
         'data-target': currentInputId,
@@ -41,8 +42,12 @@ $.fn.autofill = function (options) {
             $.grep(autoCompleteData, function (object) {
                 try {
                     if (object.label.search(new RegExp(query, 'i')) !== -1) {
-                        li += '<li class="autofill-list" data-value="' + object.value + '">' + object.label + '</li>';
+                        $.each(object,function(key,value){
+                            dataAttributes+=' data-'+key+'="'+value+'" ';
+                        });
+                        li += '<li class="autofill-list"'+dataAttributes+'>' + object.label + '</li>';
                         $(event.target).trigger('onChange',[query,object,options]);
+                        dataAttributes='';
                     }
                 } catch (e) {
                     $('#' + listId).css('left', -99999);
@@ -54,16 +59,21 @@ $.fn.autofill = function (options) {
         li = '';
         $(this).val('');
         $.each(autoCompleteData, function (key, object) {
-            li += '<li class="autofill-list" data-value="' + object.value + '">' + object.label + '</li>';
+            $.each(object,function(key,value){
+                dataAttributes+=' data-'+key+'="'+value+'" ';
+            });
+            li += '<li class="autofill-list"'+dataAttributes+'>' + object.label + '</li>';
+            dataAttributes='';
         });
         $('#' + listId).html(li).css('left', position.left);
         $(event.target).trigger('onFocusIn',[options]);
+        $(event.target).trigger('onChange',['',{},options]);
     });
     $currentInput.after($list);
     $('#' + listId).html(li);
     $(document).on('click', function (event) {
         if ($(event.target).hasClass('autofill-list') && $(event.target).parent('ul').data('target') == currentInputId) {
-            $(event.target).trigger('onSelect', [$(event.target).text(), $(event.target).data('value'), $(event.target).parent('ul'), $(event.target).parent('ul').data('target'), options]);
+            $(event.target).trigger('onSelect', [$(event.target).text(), $(event.target).data(), $(event.target).parent('ul'), $(event.target).parent('ul').data('target'), options]);
         }else{
             if($(event.target).attr('id')!==currentInputId){
                 $('#'+listId).trigger('close');
@@ -71,11 +81,11 @@ $.fn.autofill = function (options) {
         }
     });
 };
-$(document).on('onSelect', '.autofill-list', function (event, label, value, parentList, targetInputId, options) {
+$(document).on('onSelect', '.autofill-list', function (event, label, object, parentList, targetInputId, options) {
     $('#' + targetInputId).val(label);
     $(parentList).css('left', -99999);
     if ($.isFunction(options.onSelect)) {
-        options.onSelect(label, value);
+        options.onSelect(object);
     }
 });
 $(document).on('onFocusIn',function (event,options) {
@@ -83,14 +93,14 @@ $(document).on('onFocusIn',function (event,options) {
         options.onFocusIn();
     }
 });
-$(document).on('onChange',function (event,query,object,options) {
+$(document).on('onChange',function (event,query,objects,options) {
     if($.isFunction(options.onChange)){
         var exactMatch;
         var reg = new RegExp('\^' + query + '\$', "gi");
-        exactMatch=$(object).filter(function (key,value) {
+        exactMatch=$(objects).filter(function (key,value) {
             return reg.test(value.label);
         }).get();
-        options.onChange(query,object,(exactMatch[0])?exactMatch[0]:{});
+        options.onChange(query,objects,(exactMatch[0])?exactMatch[0]:{});
     }
 });
 $(document).on('close',function(event){

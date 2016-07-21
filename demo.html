@@ -9,31 +9,43 @@
     <body>
     <form action="">
         <label for="autofill">AutoComplete</label>
-        <input type="text" id="autofill" data-autofill='[{"label":"Sainesh","value":1},{"label":"Rinku","value":2},{"label":"Tripti","value":3},{"label":"Jitendra","value":4},{"label":"Pavitra","value":5}]'>
+        <input type="text" id="autofill" data-autofill='[{"label":"Sainesh","value":1,"type":"super admin"},{"label":"Rinku","value":2,"type":"admin"},{"label":"Tripti","value":3,"type":"tester"},{"label":"Jitendra","value":4,"type":"designer"},{"label":"Pavitra","value":5,"type":"social media"}]'>
         <input type="hidden" id="hid">
         <br><br>
         <label for="autofill_2">AutoComplete</label>
-        <input type="text" id="autofill_2" data-autofill='[{"label":"Sainesh Mamgain","value":1},{"label":"Rinku Gahlaut","value":2},{"label":"Tripti Tiwari","value":3},{"label":"Jitendra Omare","value":4},{"label":"Pavitra Bansal","value":5}]'>
+        <input type="text" id="autofill_2" data-autofill='[{"label":"Sainesh Mamgain","value":1,"type":"super admin"},{"label":"Rinku Gahlaut","value":2,"type":"admin"},{"label":"Tripti Tiwari","value":3,"type":"tester"},{"label":"Jitendra Omare","value":4,"type":"designer"},{"label":"Pavitra Bansal","value":5,"type":"social media"}]'>
         <input type="hidden" id="hid_2">
+        <br><br>
+        <label for="autofill_3">AutoComplete</label>
+        <input type="text" id="autofill_3" data-autofill='[{"label":"Sainesh Mamgain","value":1,"type":"super admin"},{"label":"Rinku Gahlaut","value":2,"type":"admin"},{"label":"Tripti Tiwari","value":3,"type":"tester"},{"label":"Jitendra Omare","value":4,"type":"designer"},{"label":"Pavitra Bansal","value":5,"type":"social media"}]'>
+        <input type="hidden" id="hid_3">
     </form>
     <script>
         $('#autofill').autofill({
-            onSelect:function(label,value){
-                $('#hid').val(value);
+            onSelect:function(object){
+                $('#hid').val(object.value);
             },
-            onChange:function(query,object,exactMatch){
-                console.log(exactMatch);
-            },
-            onFocusIn:function(){
+            onChange:function(query,objects,exactMatch){
+                if(exactMatch.value!==undefined){
+                    $('#hid').val(exactMatch.value);
+                }else{
+                    $('#hid').val('');
+                }
             }
         });
         $('#autofill_2').autofill({
-            onChange:function(q,r){
-                console.log('change in two');
+            onChange:function(query,objects,exactMatch){
+                if(exactMatch.value!==undefined){
+                    $('#hid_2').val(exactMatch.value);
+                }else{
+                    $('#hid_2').val('');
+                }
             },
-            onFocusIn:function(){
+            onSelect:function(object){
+                $('#hid_2').val(object.value);
             }
         });
+        $('#autofill_3').autofill();
     </script>
     </body>
 </html>
