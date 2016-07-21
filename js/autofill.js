@@ -51,7 +51,7 @@ $.fn.autofill = function (options) {
             });
         }
         $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
-        if ($('#' + listId).find('li').length >= options.minScroll) {
+        if ($('#' + listId).find('li').length >= (options.minScroll)?options.minScroll:options_default.minScroll) {
             $('#' + listId).css({
                 height: (options.minScrollHeight)?options.minScrollHeight:options_default.minScrollHeight,
                 'overflow-y': 'scroll'
@@ -68,7 +68,7 @@ $.fn.autofill = function (options) {
             dataAttributes='';
         });
         $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
-        if ($('#' + listId).find('li').length >= options.minScroll) {
+        if ($('#' + listId).find('li').length >= (options.minScroll)?options.minScroll:options_default.minScroll) {
             $('#' + listId).css({
                 height: (options.minScrollHeight)?options.minScrollHeight:options_default.minScrollHeight,
                 'overflow-y': 'scroll'
