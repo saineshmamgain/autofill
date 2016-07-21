@@ -24,93 +24,124 @@ $.fn.autofill = function (options) {
     if (undefined == options) {
         options = options_default;
     }
+    var check=true;
     var $currentInput = $(this);
     var currentInputId = $currentInput.attr('id');
-    var autoCompleteData = $currentInput.data('autofill');
-    var position = $currentInput.position();
-    var $list = $('<ul>');
-    var listId = 'autofill_list_' + currentInputId;
-    var li = '';
-    var dataAttributes='';
-    $list.attr({
-        id: listId,
-        'data-target': currentInputId,
-        class: 'autofill-show'
-    });
-    $list.css({
-        width: $currentInput.width() + parseInt($currentInput.css('padding-left'), 10) + parseInt($currentInput.css('padding-right'), 10),
-        position: 'absolute',
-        top: (options.top)?options.top:position.top + $currentInput.outerHeight(),
-        left: -99999
-    });
-    $('#' + currentInputId).on('keyup', function (event) {
-        var query = $(this).val();
-        if (query.length) {
-            var result=$.grep(autoCompleteData, function (object) {
-                try {
-                    if (object.label.search(new RegExp(query, 'i')) !== -1) {
-                        $(event.target).trigger('onChange',[query,object,options]);
-                        return object;
+    var autoCompleteData;
+    if(options.source && options.ajax!==undefined && options.ajax===true){
+        check=false;
+        $.ajax({
+            url:options.source,
+            type:'GET',
+            success:function(response){
+                check=true;
+                autoCompleteData=response;
+                $('#'+currentInputId).trigger('autofillDataReceived');
+            },
+            error:function(){
+                check=false;
+                throw new Error('There was an error fetching data from server.');
+            }
+        });
+    }else{
+        if(options.source) {
+            autoCompleteData=JSON.parse(options.source);
+        }else {
+            autoCompleteData=$currentInput.data('autofill');
+        }
+        $('#'+currentInputId).trigger('autofillDataReceived');
+    }
+    $(document).on('autofillDataReceived','#'+currentInputId,function(){
+        var position = $currentInput.position();
+        var $list = $('<ul>');
+        var listId = 'autofill_list_' + currentInputId;
+        var li = '';
+        var cache=[];
+        $list.attr({
+            id: listId,
+            'data-target': currentInputId,
+            class: 'autofill-show'
+        });
+        $list.css({
+            width: $currentInput.width() + parseInt($currentInput.css('padding-left'), 10) + parseInt($currentInput.css('padding-right'), 10),
+            position: 'absolute',
+            top: (options.top)?options.top:position.top + $currentInput.outerHeight(),
+            left: -99999
+        });
+        if(check){
+            $('#' + currentInputId).on('keyup', function (event) {
+                var query = $(this).val();
+                if (query.length) {
+                    var result;
+                    if(cache[query]==undefined){
+                        result = $.grep(autoCompleteData, function (object) {
+                            try {
+                                if (object.label.search(new RegExp(query, 'i')) !== -1) {
+                                    $(event.target).trigger('onChange', [query, object, options]);
+                                    return object;
+                                }
+                            } catch (e) {
+                                $('#' + listId).css('left', -99999);
+                            }
+                        });
+                        cache[query]=result;
+                    }else{
+                        result=cache[query];
                     }
-                } catch (e) {
-                    $('#' + listId).css('left', -99999);
-                }
-            });
-            if(options.render || options_default.render){
-                if($.isFunction(options.render)){
-                    li=options.render(result);
+                    if(options.render || options_default.render){
+                        if($.isFunction(options.render)){
+                            li=options.render(result);
+                        }else{
+                            li=options_default.render(result);
+                        }
+                    }
                 }else{
-                    li=options_default.render(result);
+                    if(options.render || options_default.render){
+                        if($.isFunction(options.render)){
+                            li=options.render(autoCompleteData);
+                        }else{
+                            li=options_default.render(autoCompleteData);
+                        }
+                    }
                 }
-            }
-        }else{
-            if(options.render || options_default.render){
-                if($.isFunction(options.render)){
-                    li=options.render(autoCompleteData);
+                $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
+                if ($('#' + listId).find('li').length >= ((options.minScroll)?options.minScroll:options_default.minScroll)) {
+                    $('#' + listId).css({
+                        height: (options.minScrollHeight)?options.minScrollHeight:options_default.minScrollHeight,
+                        'overflow-y': 'scroll'
+                    });
+                }
+            }).on('focus', function (event) {
+                li = '';
+                $(this).val('');
+                if(options.render || options_default.render){
+                    if($.isFunction(options.render)){
+                        li=options.render(autoCompleteData);
+                    }else{
+                        li=options_default.render(autoCompleteData);
+                    }
+                }
+                $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
+                if ($('#' + listId).find('li').length >= ((options.minScroll)?options.minScroll:options_default.minScroll)) {
+                    $('#' + listId).css({
+                        height: (options.minScrollHeight)?options.minScrollHeight:options_default.minScrollHeight,
+                        'overflow-y': 'scroll'
+                    });
+                }
+                $(event.target).trigger('onFocusIn',[options]);
+                $(event.target).trigger('onChange',['',{},options]);
+            });
+            $currentInput.after($list);
+            $('#' + listId).html(li);
+            $(document).on('click', function (event) {
+                if ((event.target.tagName.toLowerCase())==='li' && ($(event.target).parent('ul').data('target')) == currentInputId) {
+                    $(event.target).trigger('onSelect', [$(event.target).text(), $(event.target).data(), $(event.target).parent('ul'), $(event.target).parent('ul').data('target'), options]);
                 }else{
-                    li=options_default.render(autoCompleteData);
+                    if($(event.target).attr('id')!==currentInputId){
+                        $('#'+listId).trigger('close');
+                    }
                 }
-            }
-        }
-        $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
-        if ($('#' + listId).find('li').length >= ((options.minScroll)?options.minScroll:options_default.minScroll)) {
-            $('#' + listId).css({
-                height: (options.minScrollHeight)?options.minScrollHeight:options_default.minScrollHeight,
-                'overflow-y': 'scroll'
             });
-        }
-    }).on('focus', function (event) {
-        li = '';
-        $(this).val('');
-        if(options.render || options_default.render){
-            if($.isFunction(options.render)){
-                li=options.render(autoCompleteData);
-            }else{
-                li=options_default.render(autoCompleteData);
-            }
-        }
-        $('#' + listId).html(li).css('left', (options.left)?options.left:position.left);
-        if ($('#' + listId).find('li').length >= ((options.minScroll)?options.minScroll:options_default.minScroll)) {
-            $('#' + listId).css({
-                height: (options.minScrollHeight)?options.minScrollHeight:options_default.minScrollHeight,
-                'overflow-y': 'scroll'
-            });
-        }
-        $(event.target).trigger('onFocusIn',[options]);
-        $(event.target).trigger('onChange',['',{},options]);
-    });
-    $currentInput.after($list);
-    $('#' + listId).html(li);
-    $(document).on('click', function (event) {
-        var parent=($(event.target).parent('li') && $(event.target).parent('li')[0]!==undefined)?$(event.target).parent('li')[0]:event.target;
-        if (((event.target.tagName.toLowerCase())==='li' || $(parent).tagName.toLowerCase()==='li') && ($(event.target).parent('ul').data('target')) == currentInputId) {
-            var target=((event.target.tagName.toLowerCase())==='li')?event.target:parent;
-            console.log(target);
-            $(target).trigger('onSelect', [$(target).text(), $(target).data(), $(target).parent('ul'), $(target).parent('ul').data('target'), options]);
-        }else{
-            if($(event.target).attr('id')!==currentInputId){
-                $('#'+listId).trigger('close');
-            }
         }
     });
 };

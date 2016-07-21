@@ -9,7 +9,7 @@
     <body>
     <form action="">
         <label for="autofill">AutoComplete</label>
-        <input type="text" id="autofill" data-autofill='[{"label":"Sainesh","value":1,"type":"super admin"},{"label":"Rinku","value":2,"type":"admin"},{"label":"Tripti","value":3,"type":"tester"},{"label":"Jitendra","value":4,"type":"designer"},{"label":"Pavitra","value":5,"type":"social media"}]'>
+        <input type="text" id="autofill" data-autofill=''>
         <input type="hidden" id="hid">
         <br><br>
         <label for="autofill_2">AutoComplete</label>
@@ -19,9 +19,12 @@
         <label for="autofill_3">AutoComplete</label>
         <input type="text" id="autofill_3" data-autofill='[{"label":"Sainesh Mamgain","value":1,"type":"super admin"},{"label":"Rinku Gahlaut","value":2,"type":"admin"},{"label":"Tripti Tiwari","value":3,"type":"tester"},{"label":"Jitendra Omare","value":4,"type":"designer"},{"label":"Pavitra Bansal","value":5,"type":"social media"}]'>
         <input type="hidden" id="hid_3">
+        <div id="hidden" style="display: none;">[{"label":"Sainesh","value":1,"type":"super admin"},{"label":"Rinku","value":2,"type":"admin"},{"label":"Tripti","value":3,"type":"tester"},{"label":"Jitendra","value":4,"type":"designer"},{"label":"Pavitra","value":5,"type":"social media"}]</div>
     </form>
     <script>
         $('#autofill').autofill({
+            source:'json/MOCK_DATA.json',
+            ajax:true,
             onSelect:function(object){
                 $('#hid').val(object.value);
             },
@@ -35,7 +38,7 @@
             render:function(objects){
                 var li='';
                 $.each(objects,function(key,value){
-                    li+='<li class="autofill-list" data-value="'+value.value+'"><span>'+value.label+'</span></li>';
+                    li+='<li class="autofill-list" data-value="'+value.value+'">'+value.label+'</li>';
                 });
                 return li;
             }
