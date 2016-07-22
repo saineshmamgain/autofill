@@ -70,6 +70,7 @@ $.fn.autofill = function (options) {
                         cache[query] = result;
                     } else {
                         result = cache[query];
+                        $(event.target).trigger('onChange', [query, result, options]);
                     }
                     if (options.render || options_default.render) {
                         if ($.isFunction(options.render)) {
@@ -93,6 +94,11 @@ $.fn.autofill = function (options) {
                         height: (options.minScrollHeight) ? options.minScrollHeight : options_default.minScrollHeight,
                         'overflow-y': 'scroll'
                     });
+                }else{
+                    $('#' + listId).css({
+                        height: 'auto',
+                        'overflow-y': 'unset'
+                    });
                 }
             }).on('focus', function (event) {
                 li = '';
@@ -109,6 +115,11 @@ $.fn.autofill = function (options) {
                     $('#' + listId).css({
                         height: (options.minScrollHeight) ? options.minScrollHeight : options_default.minScrollHeight,
                         'overflow-y': 'scroll'
+                    });
+                }else{
+                    $('#' + listId).css({
+                        height: 'auto',
+                        'overflow-y': 'unset'
                     });
                 }
                 $(event.target).trigger('onFocusIn', [options]);
