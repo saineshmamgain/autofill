@@ -2,6 +2,10 @@
 
 A simple plugin for autocomplete with the help of jquery.
 
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/saineshmamgain/autofill/dev/js/autofill.min.js"></script>
+<link href="https://raw.githubusercontent.com/saineshmamgain/autofill/dev/css/autofill.css"/>
+
 # Requirements
 
 1. [jQuery](https://code.jquery.com/jquery-3.1.0.min.js)
@@ -30,6 +34,15 @@ A simple plugin for autocomplete with the help of jquery.
     ```
     $('#myInput').autofill();
     ```
+    <input type='text' id='myInput' data-autofill='[{"label":"PHP"},{"label":"JAVA"},{"label":"jQuery"},{"label":"DotNet"},{"label":"Python"}]'>
+    
+    <script>
+        $('#myInput').autofill();
+    </script>
+    
+    
+    
+    
 2. You can provide a source element which contains the JSON array.
 
     ```
