@@ -1,7 +1,7 @@
 var options_default = {
-    onSelect: function (label, value) {
+    onSelect: function (object) {
     },
-    onChange: function (label, value) {
+    onChange: function (query, objects,exactMatch) {
     },
     onFocusIn: function () {
     },

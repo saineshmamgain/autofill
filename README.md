@@ -51,6 +51,35 @@ A simple plugin for autocomplete with the help of jquery.
         source:'myjson.php',
         ajax:true
     });
+    
+    ```
+    
+# Options
+    
+1. Currently Autofill provides following options:
+
+    ```
+    source: // can be a file or JSON array
+            // by default it takes the values from data-autofill 
+            // attribute of the input.
+    
+    ajax: // Set this to true if source is a url.
+    
+    top: // Set the CSS top attribute of the autofill list
+    
+    left: // Set the CSS left attribute of the autofill list
+    
+    onSelect: function(object){} // returns the currently
+                                 // selected object.
+    
+    onChange: function(query, objects,exactMatch){} // returns the current searched query.
+                                                    // all the matched objects
+                                                    // the object which is the exact match for the current query.
+    
+    
+    render:function(objects){} // returns all the matched objects
+                               // user will have to return a string of li. eg. '<li>PHP</li><li>Java</li>';
+    
     ```
 
     
