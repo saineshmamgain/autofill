@@ -69,6 +69,10 @@ A simple plugin for autocomplete with the help of jquery.
     
     left: // Set the CSS left attribute of the autofill list
     
+    minScroll: // Set the number of li after which the list will become scrollable. default is 6.
+    
+    minScrollHeight: // Set the height in px of the list. Default is 100px.    
+    
     onSelect: function(object){} // returns the currently
                                  // selected object.
     
