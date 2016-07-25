@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AutoFill</title>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/autofill.js"></script>
+        <link rel="stylesheet" href="css/autofill.css">
+    </head>
+    <body>
+    <form action="">
+        <label for="autofill">AutoComplete</label>
+        <input type="text" id="autofill" data-autofill=''>
+        <input type="hidden" id="hid">
+        <br><br>
+        <label for="autofill_2">AutoComplete</label>
+        <input type="text" id="autofill_2" data-autofill=''>
+        <input type="hidden" id="hid_2">
+        <br><br>
+        <label>AutoComplete</label>
+        <input type="text" class="autofill" data-autofill='[{"label":"Sainesh Mamgain","value":1,"type":"super admin"},{"label":"Rinku Gahlaut","value":2,"type":"admin"},{"label":"Tripti Tiwari","value":3,"type":"tester"},{"label":"Jitendra Omare","value":4,"type":"designer"},{"label":"Pavitra Bansal","value":5,"type":"social media"}]'>
+        <input type="hidden" id="hid_3">
+        <div id="hidden" style="display: none;">[{"label":"Sainesh","value":1,"type":"super admin"},{"label":"Rinku","value":2,"type":"admin"},{"label":"Tripti","value":3,"type":"tester"},{"label":"Jitendra","value":4,"type":"designer"},{"label":"Pavitra","value":5,"type":"social media"}]</div>
+    </form>
+    <script>
+        $('#autofill').autofill({
+            source:'json/MOCK_DATA.json',
+            ajax:true,
+            onSelect:function(object){
+                $('#hid').val(object.value);
+            },
+            onChange:function(query,objects,exactMatch){
+                if(exactMatch.value!==undefined){
+                    $('#hid').val(exactMatch.value);
+                }else{
+                    $('#hid').val('');
+                }
+            },
+            render:function(objects){
+                var li='';
+                $.each(objects,function(key,value){
+                    li+='<li class="autofill-list" data-value="'+value.value+'">'+value.label+'</li>';
+                });
+                return li;
+            }
+        });
+        $('#autofill_2').autofill({
+            source:$('#hidden').text(),
+            onChange:function(query,objects,exactMatch){
+                if(exactMatch.value!==undefined){
+                    $('#hid_2').val(exactMatch.value);
+                }else{
+                    $('#hid_2').val('');
+                }
+            },
+            onSelect:function(object){
+                $('#hid_2').val(object.value);
+            }
+        });
+        $('.autofill').autofill();
+    </script>
+    </body>
+</html>
