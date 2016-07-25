@@ -87,5 +87,9 @@ A simple plugin for autocomplete with the help of jquery.
     
     ```
 
+# Demo
     
+1. You can see the full working demo by downloading and running demo.html
+
+2. I will provide a full working demo link very soon.
 
