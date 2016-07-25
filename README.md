@@ -9,7 +9,7 @@ A simple plugin for autocomplete with the help of jquery.
 # Installation
 
 1. Download the source.
-2. Copy and paste autofill.min.js and autofill.min.css
+2. Copy and paste `autofill.min.js` and `autofill.css`
 3. Include both in your file.
 
 # Documentation
